@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>아버지의 시집</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nanum+Gothic&family=Nanum+Myeongjo&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--paper:#f6efe0;--ink:#3b2f24;--soft:#7a6a58;--line:#d9c9ac;--card:#fffaf0;--accent:#8a5a3b;--shadow:rgba(90,60,30,.15)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#2a231b;--ink:#efe3cf;--soft:#b8a68c;--line:#4d4132;--card:#352c22;--accent:#d9a577;--shadow:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--paper:#2a231b;--ink:#efe3cf;--soft:#b8a68c;--line:#4d4132;--card:#352c22;--accent:#d9a577;--shadow:rgba(0,0,0,.4)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nanum Myeongjo','Batang',serif;line-height:1.8;
+background-image:radial-gradient(rgba(150,110,60,.07) 1px,transparent 1.5px),radial-gradient(rgba(150,110,60,.05) 1px,transparent 1.5px);background-size:7px 7px,13px 13px;background-position:0 0,3px 5px}
+.wrap{max-width:960px;margin:0 auto;padding:36px 20px 80px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;font-size:.9rem}
+button:hover{border-color:var(--accent)}
+button.pri{background:var(--accent);color:#fff8ee;border-color:var(--accent)}
+button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+header{text-align:center;margin:44px 0 30px}
+[contenteditable]{outline:none;border-bottom:1px dashed transparent}
+[contenteditable]:hover,[contenteditable]:focus{border-bottom-color:var(--line)}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:400;letter-spacing:.12em;margin:0 0 14px}
+.greet{color:var(--soft);max-width:560px;margin:0 auto;white-space:pre-wrap}
+.hint{font-size:.75rem;color:var(--soft);margin-top:6px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:28px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.card{border-radius:6px;padding:26px 22px;min-height:190px;cursor:pointer;box-shadow:0 3px 14px var(--shadow);border:1px solid var(--line);background-size:cover;background-position:center;position:relative;overflow:hidden;color:#3b2f24;transition:transform .2s}
+.card:hover{transform:translateY(-3px)}
+.card.img::before{content:"";position:absolute;inset:0;background:rgba(255,250,240,.72)}
+.card>*{position:relative}
+.card small{color:#7a6a58}.card h3{margin:6px 0 10px;font-weight:700;font-size:1.15rem}
+.card p{margin:0;color:#4d3f31;font-size:.9rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+.empty{text-align:center;color:var(--soft);padding:60px 0}
+.modal{position:fixed;inset:0;background:rgba(40,28,16,.55);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 14px;z-index:20}
+.modal.show{display:flex}
+.box{background:var(--card);border-radius:10px;max-width:640px;width:100%;padding:28px 24px;margin:auto;border:1px solid var(--line)}
+.box h2{margin:0 0 14px;font-weight:400}
+label{display:block;font-size:.85rem;color:var(--soft);margin:12px 0 4px}
+input[type=text],input[type=date],textarea{width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+textarea{min-height:240px;resize:vertical}
+.drop{border:2px dashed var(--accent);border-radius:10px;padding:34px 14px;text-align:center;color:var(--soft);cursor:pointer}
+.drop.over{background:rgba(138,90,59,.12)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.sw{width:34px;height:34px;border-radius:50%;padding:0;border:2px solid var(--line)}
+.sw.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--ink)}
+.reader{max-width:720px;padding:0;overflow:hidden}
+.rtool{padding:12px 16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:space-between;border-bottom:1px solid var(--line);background:var(--card);color:var(--ink)}
+.rbody{padding:48px 28px 56px;text-align:center;background-size:cover;background-position:center;color:#3b2f24;position:relative}
+.rbody.img::before{content:"";position:absolute;inset:0;background:rgba(255,250,240,.78)}
+.rbody>*{position:relative}
+.rbody h2{font-weight:700;margin:0 0 6px;font-size:1.6rem}
+.rbody .meta{color:#7a6a58;font-size:.85rem;margin-bottom:28px}
+.poem{white-space:pre-wrap;font-size:1.1rem;line-height:2.1}
+.f-m{font-family:'Nanum Myeongjo','Batang',serif}.f-g{font-family:'Nanum Gothic','Malgun Gothic',sans-serif}.f-h{font-family:'Nanum Pen Script','Nanum Brush Script',cursive}
+.s-1 .poem{font-size:1.1rem}.s-2 .poem{font-size:1.4rem}.s-3 .poem{font-size:1.8rem}
+.f-h.s-1 .poem{font-size:1.5rem}.f-h.s-2 .poem{font-size:1.9rem}.f-h.s-3 .poem{font-size:2.4rem}
+.sum li{margin:4px 0}
+:root{--paper:#f7f7f7;--ink:#111;--soft:#666;--line:#e3e3e3;--card:#fff;--accent:#111;--shadow:rgba(0,0,0,.07)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#1a1a1a;--ink:#f2f2f2;--soft:#aaa;--line:#383838;--card:#242424;--accent:#f2f2f2;--shadow:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--paper:#1a1a1a;--ink:#f2f2f2;--soft:#aaa;--line:#383838;--card:#242424;--accent:#f2f2f2;--shadow:rgba(0,0,0,.4)}
+body{font-family:'Noto Sans KR','Nanum Gothic','Malgun Gothic',sans-serif;background-image:none;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:11}
+button.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--card);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:14px 28px}
+.logo{font-weight:700;font-size:1.15rem}
+.nav .menu{display:flex;gap:4px;flex-wrap:wrap}
+.nav button{border:0;background:none;border-radius:6px;padding:6px 12px;font-size:.92rem}
+.wrap{max-width:1040px;padding:56px 20px 100px}
+.hero{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 2px 14px var(--shadow);min-height:430px}
+.hl{padding:48px 44px;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.hl .lab{color:var(--soft)}
+.hl h1{font-size:clamp(1.9rem,4.5vw,2.8rem);font-weight:700;letter-spacing:-.02em;line-height:1.3;margin:0}
+.hl .greet{color:var(--soft);white-space:pre-wrap;max-width:none;margin:0;font-size:1.05rem}
+.hl .hint{margin:0}
+.pill{align-self:flex-start;border:1px solid var(--ink);border-radius:999px;padding:8px 18px;background:none;margin-top:10px}
+.hp{position:relative;cursor:pointer;padding:44px 36px 90px;display:flex;flex-direction:column;justify-content:center;background-size:cover;background-position:center;color:#3b2f24;font-family:'Nanum Myeongjo','Batang',serif}
+.hp small{color:#7a6a58}.hp h3{font-size:1.45rem;margin:6px 0 14px}
+.hp p{white-space:pre-line;line-height:2;margin:0;max-height:11em;overflow:hidden}
+.arrs{position:absolute;left:0;bottom:0;background:var(--card);display:flex;z-index:2}
+.arrs button{border:0;border-radius:0;width:64px;height:64px;background:var(--card);font-size:1.2rem;color:var(--ink)}
+.sec{font-size:1.8rem;font-weight:700;margin:72px 0 18px}
+.tabs{justify-content:flex-start;margin:0 0 30px}
+.tabs button{background:none}.tabs button.on{background:var(--ink);color:var(--paper)}
+.grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:36px 40px}
+.bk{display:flex;gap:22px;align-items:center;cursor:pointer}
+.cv{flex:0 0 130px;aspect-ratio:3/4;border-radius:2px;box-shadow:0 4px 12px var(--shadow);display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;font-family:'Nanum Myeongjo','Batang',serif;font-weight:700;color:#3b2f24;background-size:cover;background-position:center;line-height:1.4;word-break:keep-all}
+.bi h3{margin:0 0 8px;font-size:1.1rem;font-weight:500}
+.bi p{color:var(--soft);font-size:.88rem;margin:0 0 14px;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bi .m{font-size:.85rem;color:var(--soft)}
+.totop{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));width:48px;height:48px;border-radius:50%;background:#555;color:#fff;border:0;padding:0;font-size:1.2rem}
+@media(max-width:720px){.hero{grid-template-columns:1fr}.hl{padding:32px 24px}.nav{padding:12px 16px}.hp{min-height:320px}}
+</style></head><body>
+<nav class="nav"><div class="logo" id="logo">아버지의 시집</div>
+<div class="menu"><button id="bList">시 모아보기</button><button id="bUp">엑셀로 시 일괄 올리기</button><button id="bNew">새 시 쓰기</button></div></nav>
+<div class="wrap">
+<div class="hero">
+<div class="hl"><div class="lab">아버지의 시 모음</div>
+<h1 id="title" contenteditable="true" spellcheck="false">아버지의 시집</h1>
+<div class="greet" id="greet" contenteditable="true" spellcheck="false"></div>
+<div class="hint">제목과 인사말은 눌러서 바로 고칠 수 있어요.</div>
+<button class="pill" id="bGo">시 둘러보기 ⟶</button></div>
+<div class="hp" id="hp"></div>
+</div>
+<h2 class="sec" id="secT">시 모아보기</h2>
+<div class="tabs" id="tabs"></div>
+<div class="grid" id="grid"></div>
+</div>
+<button class="totop" id="toTop" aria-label="맨 위로">↑</button>
+
+<!-- 업로드 -->
+<div class="modal" id="mUp"><div class="box">
+<h2>엑셀로 시 일괄 올리기</h2>
+<div class="drop" id="drop">여기에 엑셀 파일(.xlsx, .xls, .csv)을 끌어다 놓거나<br><b>눌러서 파일을 선택</b>하세요.</div>
+<input type="file" id="file" accept=".xlsx,.xls,.csv" hidden>
+<div class="row"><b style="font-size:.9rem">올리는 방법</b>
+<label style="margin:0"><input type="radio" name="mode" value="add" checked> 기존 시에 이어서 추가</label>
+<label style="margin:0"><input type="radio" name="mode" value="replace"> 모두 지우고 덮어쓰기</label></div>
+<p style="font-size:.85rem;color:var(--soft)">• 시트가 여러 개면 <b>시트 이름이 카테고리</b>가 됩니다.<br>• 시트가 하나면 <b>‘카테고리’ 열</b>의 값으로 분류합니다.<br>• 첫 줄에 <b>제목, 내용(본문), 작성일, 카테고리</b> 열 이름을 적어 주세요.</p>
+<div class="row" style="justify-content:space-between"><button id="bSample">📥 샘플 엑셀 양식 다운로드</button><button id="cUp">닫기</button></div>
+</div></div>
+
+<!-- 요약 -->
+<div class="modal" id="mSum"><div class="box"><h2>업로드 완료</h2><div id="sumBody" class="sum"></div><div class="row" style="justify-content:flex-end"><button class="pri" id="cSum">확인</button></div></div></div>
+
+<!-- 쓰기 -->
+<div class="modal" id="mEd"><div class="box">
+<h2 id="edH">새 시 쓰기</h2>
+<label>제목</label><input type="text" id="eT">
+<div class="row" style="align-items:flex-start;gap:14px">
+<div style="flex:1;min-width:150px"><label style="margin-top:0">카테고리</label><input type="text" id="eC" list="cl" placeholder="예: 봄, 가족"><datalist id="cl"></datalist></div>
+<div style="flex:1;min-width:150px"><label style="margin-top:0">작성일</label><input type="date" id="eD"></div></div>
+<label>내용</label><textarea id="eB"></textarea>
+<label>배경 (감성 색상 또는 사진)</label>
+<div class="row" id="sws"></div>
+<div class="row"><input type="file" id="eI" accept="image/*" hidden><button id="bImg">🖼️ 배경 사진 올리기</button><button id="bImgX">사진 빼기</button><span id="imgNote" style="font-size:.8rem;color:var(--soft)"></span></div>
+<div class="row" style="justify-content:flex-end;margin-top:22px"><button id="cEd">취소</button><button class="pri" id="sEd">저장</button></div>
+</div></div>
+
+<!-- 읽기 -->
+<div class="modal" id="mRd"><div class="box reader">
+<div class="rtool">
+<div class="row" style="margin:0">
+<button data-f="f-m">명조체</button><button data-f="f-g">고딕체</button><button data-f="f-h">손글씨체</button>
+<button data-s="s-1">보통</button><button data-s="s-2">크게</button><button data-s="s-3">아주 크게</button></div>
+<div class="row" style="margin:0"><button id="rEd">수정</button><button id="rDel">삭제</button><button id="rX">닫기</button></div></div>
+<div class="rbody" id="rBody"><h2 id="rT"></h2><div class="meta" id="rM"></div><div class="poem" id="rP"></div></div>
+</div></div>
+
+<script>
+const KEY='fatherPoems_v1',COLORS=['#fbeed3','#f3dfd6','#e0ebd5','#dbe8ea','#e8dff0'];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const SAMPLE=[
+{title:'봄비',cat:'봄',date:'2024-03-12',bg:COLORS[2],body:'창밖에 봄비가 내린다\n마른 가지마다\n초록 숨결이 맺힌다\n\n겨우내 닫아 둔 마음도\n살며시 문을 연다'},
+{title:'꽃길을 걸으며',cat:'봄',date:'2024-04-03',bg:COLORS[1],body:'벚꽃잎 흩날리는 길\n한 걸음마다\n지난 시절이 떨어진다\n\n그래도 좋다\n오늘 이 길을 걷고 있으니'},
+{title:'아내에게',cat:'가족',date:'2023-12-25',bg:COLORS[0],body:'긴 세월 곁에서\n말없이 차려 준 따순 밥상\n그 한 그릇이\n내 모든 시의 시작이었소'},
+{title:'어머니의 고무신',cat:'그리움',date:'2022-08-15',bg:COLORS[3],body:'댓돌 위에 가지런한\n어머니의 하얀 고무신\n이제는 신을 이 없어도\n내 마음 문 앞에 늘 놓여 있네'}];
+let S=load();
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.poems))return d}catch(e){}
+return{title:'아버지의 시집',greet:'바쁜 걸음 잠시 멈추고,\n제 서툰 노래에 귀 기울여 주셔서 고맙습니다.',poems:SAMPLE.map(p=>({...p,id:uid()}))}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){alert('저장 공간이 부족해요. 사진을 줄이거나 일부 시를 지워 주세요.')}}
+let cur='전체',editId=null,eBg=COLORS[0],eImg='',readId=null,rF='f-m',rS='s-1';
+
+function render(){
+ $('title').textContent=S.title;$('logo').textContent=S.title;heroR();$('greet').textContent=S.greet;document.title=S.title;
+ const cats=[...new Set(S.poems.map(p=>p.cat))];if(cur!=='전체'&&!cats.includes(cur))cur='전체';
+ $('tabs').innerHTML=['전체',...cats].map(c=>`<button class="${c===cur?'on':''}" data-c="${esc(c)}">${esc(c)}${c==='전체'?' '+S.poems.length:' '+S.poems.filter(p=>p.cat===c).length}</button>`).join('');
+ $('cl').innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join('');
+ const list=S.poems.filter(p=>cur==='전체'||p.cat===cur);
+ $('grid').innerHTML=list.length?list.map(p=>`<div class="bk" data-id="${p.id}"><div class="cv" style="background-color:${p.bg||COLORS[0]};${p.img?`background-image:linear-gradient(rgba(255,250,240,.6),rgba(255,250,240,.6)),url('${p.img}')`:''}">${esc(p.title)}</div><div class="bi"><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p><div class="m">${esc(p.cat)} · ${esc(p.date||'')}</div></div></div>`).join(''):'<div class="empty">아직 시가 없어요.<br>‘새 시 쓰기’ 또는 엑셀로 올려 보세요.</div>';
+}
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(b){cur=b.dataset.c;render()}};
+$('grid').onclick=e=>{const c=e.target.closest('.bk');if(c)openRead(c.dataset.id)};
+let hi=0;
+function heroR(){const h=$('hp'),n=S.poems.length;if(!n){h.innerHTML='<p>첫 시를 써 보세요.</p>';h.onclick=null;return}
+ const p=S.poems[((hi%n)+n)%n];h.style.backgroundColor=p.bg||COLORS[0];h.style.backgroundImage=p.img?`linear-gradient(rgba(255,250,240,.75),rgba(255,250,240,.75)),url('${p.img}')`:'none';
+ h.innerHTML=`<small>${esc(p.cat)}</small><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p><div class="arrs"><button id="hPrev" aria-label="이전 시">‹</button><button id="hNext" aria-label="다음 시">›</button></div>`;
+ h.onclick=e=>{if(e.target.id==='hPrev'){hi--;heroR()}else if(e.target.id==='hNext'){hi++;heroR()}else openRead(p.id)}}
+const go=()=>$('secT').scrollIntoView({behavior:'smooth'});$('bList').onclick=go;$('bGo').onclick=go;$('toTop').onclick=()=>scrollTo({top:0,behavior:'smooth'});
+$('title').oninput=()=>{S.title=$('title').textContent;$('logo').textContent=S.title;save()};
+$('greet').oninput=()=>{S.greet=$('greet').textContent;save()};
+const show=(id,v=true)=>$(id).classList.toggle('show',v);
+
+/* 읽기 */
+function openRead(id){readId=id;const p=S.poems.find(x=>x.id===id);if(!p)return;
+ $('rT').textContent=p.title;$('rM').textContent=p.cat+(p.date?' · '+p.date:'');$('rP').textContent=p.body;
+ const b=$('rBody');b.style.backgroundColor=p.bg||COLORS[0];b.style.backgroundImage=p.img?`url('${p.img}')`:'none';b.classList.toggle('img',!!p.img);
+ applyRd();show('mRd')}
+function applyRd(){const b=$('rBody');b.className=b.className.replace(/\b[fs]-\w\b/g,'').trim()+` ${rF} ${rS}`;
+ document.querySelectorAll('.rtool [data-f]').forEach(x=>x.classList.toggle('on',x.dataset.f===rF));
+ document.querySelectorAll('.rtool [data-s]').forEach(x=>x.classList.toggle('on',x.dataset.s===rS))}
+document.querySelector('.rtool').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.f)rF=b.dataset.f;if(b.dataset.s)rS=b.dataset.s;applyRd()};
+$('rX').onclick=()=>show('mRd',false);
+$('rEd').onclick=()=>{show('mRd',false);openEd(readId)};
+$('rDel').onclick=()=>{if(confirm('이 시를 삭제할까요?')){S.poems=S.poems.filter(p=>p.id!==readId);save();show('mRd',false);render()}};
+
+/* 쓰기 */
+function drawSw(){$('sws').innerHTML=COLORS.map(c=>`<button class="sw ${c===eBg&&!eImg?'on':''}" data-c="${c}" style="background:${c}" aria-label="배경색"></button>`).join('');$('imgNote').textContent=eImg?'사진이 선택되었어요.':''}
+$('sws').onclick=e=>{const b=e.target.closest('.sw');if(b){eBg=b.dataset.c;eImg='';drawSw()}};
+function openEd(id){editId=id||null;const p=id?S.poems.find(x=>x.id===id):null;
+ $('edH').textContent=p?'시 고치기':'새 시 쓰기';$('eT').value=p?p.title:'';$('eC').value=p?p.cat:(cur!=='전체'?cur:'');$('eD').value=p?p.date:today();$('eB').value=p?p.body:'';
+ eBg=p?p.bg||COLORS[0]:COLORS[0];eImg=p?p.img||'':'';drawSw();show('mEd')}
+$('bNew').onclick=()=>openEd();$('cEd').onclick=()=>show('mEd',false);
+$('bImg').onclick=()=>$('eI').click();$('bImgX').onclick=()=>{eImg='';drawSw()};
+$('eI').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=900,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);eImg=c.toDataURL('image/jpeg',.7);drawSw()};im.src=r.result};r.readAsDataURL(f);e.target.value=''};
+$('sEd').onclick=()=>{const t=$('eT').value.trim(),b=$('eB').value.trim();if(!t||!b){alert('제목과 내용을 적어 주세요.');return}
+ const o={title:t,body:$('eB').value.replace(/\s+$/,''),cat:$('eC').value.trim()||'미분류',date:$('eD').value,bg:eBg,img:eImg};
+ if(editId){Object.assign(S.poems.find(p=>p.id===editId),o)}else S.poems.unshift({id:uid(),...o});
+ save();show('mEd',false);render()};
+
+/* 엑셀 */
+$('bUp').onclick=()=>show('mUp');$('cUp').onclick=()=>show('mUp',false);$('cSum').onclick=()=>show('mSum',false);
+$('drop').onclick=()=>$('file').click();
+['dragover','dragenter'].forEach(v=>$('drop').addEventListener(v,e=>{e.preventDefault();$('drop').classList.add('over')}));
+['dragleave','drop'].forEach(v=>$('drop').addEventListener(v,e=>{e.preventDefault();$('drop').classList.remove('over')}));
+$('drop').addEventListener('drop',e=>{if(e.dataTransfer.files[0])readFile(e.dataTransfer.files[0])});
+$('file').onchange=e=>{if(e.target.files[0])readFile(e.target.files[0]);e.target.value=''};
+const norm=s=>String(s).replace(/\s/g,'').toLowerCase();
+const FIND={title:['제목','시제목','title'],body:['내용','본문','시','content','body'],date:['작성일','날짜','일자','date'],cat:['카테고리','분류','category']};
+const fmtDate=v=>{if(v instanceof Date&&!isNaN(v)){return new Date(v.getTime()-v.getTimezoneOffset()*6e4).toISOString().slice(0,10)}return String(v??'').trim()};
+function readFile(f){
+ if(typeof XLSX==='undefined'){alert('엑셀 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');return}
+ const r=new FileReader();
+ r.onload=()=>{try{
+  const wb=XLSX.read(new Uint8Array(r.result),{type:'array',cellDates:true});
+  const generic=/^(sheet|시트)\s*\d*$/i,multi=wb.SheetNames.length>1,found=[];
+  wb.SheetNames.forEach(sn=>{
+   const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:'',raw:true});
+   if(rows.length<2)return;
+   const head=rows[0].map(norm),idx={};
+   for(const k in FIND){idx[k]=head.findIndex(h=>FIND[k].some(n=>norm(n)===h))}
+   if(idx.title<0&&idx.body<0){idx.title=0;idx.body=1}
+   if(idx.body<0)idx.body=head.findIndex((_,i)=>i!==idx.title&&i!==idx.date&&i!==idx.cat);
+   if(idx.title<0)idx.title=head.findIndex((_,i)=>i!==idx.body&&i!==idx.date&&i!==idx.cat);
+   const base=(multi||!generic.test(sn))?sn:'미분류';
+   rows.slice(1).forEach(row=>{
+    const g=i=>i>=0?row[i]:'',body=String(g(idx.body)??'').trim();let title=String(g(idx.title)??'').trim();
+    if(!body&&!title)return;if(!title)title=body.split('\n')[0].slice(0,20);
+    const cat=String(g(idx.cat)??'').trim()||base;
+    found.push({id:uid(),title,body,cat,date:fmtDate(g(idx.date))||today(),bg:COLORS[found.length%5],img:''})})});
+  if(!found.length){alert('시를 찾지 못했어요. 첫 줄에 ‘제목’, ‘내용’ 열 이름이 있는지 확인해 주세요.');return}
+  const mode=document.querySelector('input[name=mode]:checked').value;
+  if(mode==='replace')S.poems=found;else S.poems=[...found,...S.poems];
+  save();cur='전체';render();
+  const cnt={};found.forEach(p=>cnt[p.cat]=(cnt[p.cat]||0)+1);
+  $('sumBody').innerHTML=`<p>모두 <b>${found.length}편</b>의 시를 ${mode==='replace'?'새로 등록':'추가'}했어요.</p><ul>${Object.entries(cnt).map(([k,v])=>`<li><b>${esc(k)}</b> · ${v}편</li>`).join('')}</ul>`;
+  show('mUp',false);show('mSum')
+ }catch(err){alert('파일을 읽는 중 문제가 생겼어요: '+err.message)}};
+ r.readAsArrayBuffer(f)}
+
+/* 샘플 양식 */
+$('bSample').onclick=async()=>{
+ if(typeof XLSX==='undefined'){alert('엑셀 라이브러리를 불러오지 못했어요.');return}
+ const H=['제목','내용','작성일'],wb=XLSX.utils.book_new(),by={};
+ SAMPLE.forEach(p=>(by[p.cat]=by[p.cat]||[]).push([p.title,p.body,p.date]));
+ for(const k in by){const ws=XLSX.utils.aoa_to_sheet([H,...by[k]]);ws['!cols']=[{wch:18},{wch:50},{wch:12}];XLSX.utils.book_append_sheet(wb,ws,k)}
+ const data=XLSX.write(wb,{type:'array',bookType:'xlsx'});
+ try{const d=window.claude&&await claude.use('downloads');
+  if(d){await d.save({filename:'시집_샘플양식.xlsx',data});return}}catch(e){if(e&&e.code==='declined')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data]));a.download='시집_샘플양식.xlsx';a.click()};
+
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('mousedown',e=>{if(e.target===m&&m.id!=='mEd')show(m.id,false)}));
+render();
+</script></body></html>
