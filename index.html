@@ -112,6 +112,11 @@ input[type=password]{width:100%;font:inherit;padding:9px 11px;border:1px solid v
 .foot{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:80px;padding-top:28px;border-top:1px solid var(--line)}
 .foot button{padding:10px 20px}
 .fh{flex-basis:100%;text-align:center;color:var(--soft);font-size:.8rem;margin:2px 0 0}
+.hp p{max-height:none;line-height:1.9;display:-webkit-box;-webkit-line-clamp:12;-webkit-box-orient:vertical;overflow:hidden}
+.hp{padding-bottom:96px}
+.hp{contain:size;overflow:hidden}
+.hp p{flex:1 1 0;min-height:0;max-height:none;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:6;overflow:hidden}
+@media(max-width:720px){.hp{min-height:400px}}
 </style></head><body>
 <div class="wrap">
 <div class="hero">
@@ -203,7 +208,7 @@ function render(){
  $('tabs').innerHTML=['전체',...cats].map(c=>`<button class="${c===cur?'on':''}" data-c="${esc(c)}">${esc(c)}${c==='전체'?' '+ALL().length:' '+ALL().filter(p=>p.cat===c).length}</button>`).join('');
  $('cl').innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join('');
  const list=ALL().filter(p=>cur==='전체'||p.cat===cur);
- $('grid').innerHTML=list.length?list.map(p=>`<div class="bk" data-id="${p.id}"><div class="cv" style="background-color:${p.bg||COLORS[0]};${p.img?`background-image:linear-gradient(rgba(255,250,240,.6),rgba(255,250,240,.6)),url('${p.img}')`:''}">${esc(p.title)}</div><div class="bi"><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p><div class="m">${esc(p.cat)} · ${esc(p.date||'')}</div></div></div>`).join(''):'<div class="empty">아직 시가 없어요.<br>‘새 시 쓰기’ 또는 엑셀로 올려 보세요.</div>';
+ $('grid').innerHTML=list.length?list.map(p=>`<div class="bk" data-id="${p.id}"><div class="cv" style="background-color:${p.bg||COLORS[0]};${p.img?`background-image:linear-gradient(rgba(255,250,240,.6),rgba(255,250,240,.6)),url('${p.img}')`:''}">${esc(p.title)}</div><div class="bi"><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p><div class="m">${esc(p.cat)} · ${esc(p.date||'')}${SH.length&&!p.shared?' · 이 기기에만':''}</div></div></div>`).join(''):'<div class="empty">아직 시가 없어요.<br>‘새 시 쓰기’ 또는 엑셀로 올려 보세요.</div>';
 }
 $('tabs').onclick=e=>{const b=e.target.closest('button');if(b){cur=b.dataset.c;render()}};
 $('grid').onclick=e=>{const c=e.target.closest('.bk');if(c)openRead(c.dataset.id)};
@@ -211,7 +216,9 @@ let hi=0;
 function heroR(){const h=$('hp'),n=ALL().length;if(!n){h.innerHTML='<p>첫 시를 써 보세요.</p>';h.onclick=null;return}
  const p=ALL()[((hi%n)+n)%n];h.style.backgroundColor=p.bg||COLORS[0];h.style.backgroundImage=p.img?`linear-gradient(rgba(255,250,240,.75),rgba(255,250,240,.75)),url('${p.img}')`:'none';
  h.innerHTML=`<small>${esc(p.cat)}</small><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p><div class="arrs"><button id="hPrev" aria-label="이전 시">‹</button><button id="hNext" aria-label="다음 시">›</button></div>`;
- h.onclick=e=>{if(e.target.id==='hPrev'){hi--;heroR()}else if(e.target.id==='hNext'){hi++;heroR()}else openRead(p.id)}}
+ h.onclick=e=>{if(e.target.id==='hPrev'){hi--;heroR()}else if(e.target.id==='hNext'){hi++;heroR()}else openRead(p.id)};fit()}
+function fit(){const p=document.querySelector('#hp p');if(!p)return;const lh=parseFloat(getComputedStyle(p).lineHeight)||30;p.style.webkitLineClamp=String(Math.max(1,Math.floor(p.clientHeight/lh)))}
+try{new ResizeObserver(()=>fit()).observe($('hp'))}catch(e){}
 const go=()=>$('secT').scrollIntoView({behavior:'smooth'});$('bGo').onclick=go;$('toTop').onclick=()=>scrollTo({top:0,behavior:'smooth'});
 $('title').oninput=()=>{S.title=$('title').textContent;save()};
 $('greet').oninput=()=>{S.greet=$('greet').textContent;save()};
@@ -295,7 +302,9 @@ $('bExp').onclick=()=>{if(typeof XLSX==='undefined'){alert('엑셀 라이브러�
  const wb=XLSX.utils.book_new();for(const k in by){const ws=XLSX.utils.aoa_to_sheet([['제목','내용','작성일'],...by[k]]);ws['!cols']=[{wch:18},{wch:50},{wch:12}];XLSX.utils.book_append_sheet(wb,ws,k.replace(/[\[\]:*?\/\\]/g,'').slice(0,31)||'미분류')}
  saveWb(wb,'poems.xlsx')};
 async function loadShared(){try{const r=await fetch('poems.xlsx?v='+Date.now());if(!r.ok)return;const buf=new Uint8Array(await r.arrayBuffer());if(buf[0]!==80||buf[1]!==75)return;
- SH=parseWB(XLSX.read(buf,{type:'array',cellDates:true})).map((p,i)=>({...p,id:'s'+i,shared:true}));render()}catch(e){}}
+ SH=parseWB(XLSX.read(buf,{type:'array',cellDates:true})).map((p,i)=>({...p,id:'s'+i,shared:true}));
+ try{if(SH.length&&!localStorage.getItem('shared_migrated')){localStorage.setItem('fatherPoems_backup',JSON.stringify(S.poems));S.poems=[];save();localStorage.setItem('shared_migrated','1')}}catch(e){}
+ render()}catch(e){}}
 /* 샘플 양식 */
 $('bSample').onclick=async()=>{
  if(typeof XLSX==='undefined'){alert('엑셀 라이브러리를 불러오지 못했어요.');return}
