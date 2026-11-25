@@ -125,6 +125,7 @@ button:disabled{opacity:.4;cursor:default}
 .srch input{border-radius:999px;padding:11px 42px 11px 18px;background:var(--card)}
 .srch button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;padding:6px 10px;color:var(--soft)}
 .qinfo{color:var(--soft);font-size:.85rem;min-height:1.3em;margin:0 0 12px}
+.dots{align-self:center;color:var(--soft);padding:0 2px}
 </style></head><body>
 <div class="wrap">
 <div class="hero">
@@ -220,7 +221,7 @@ function render(){
  $('qinfo').textContent=q?`검색 결과 ${list.length}편`:'';
  const N=10,pages=Math.max(1,Math.ceil(list.length/N));if(pg>pages)pg=pages;const view=list.slice((pg-1)*N,pg*N);
  $('grid').innerHTML=view.length?view.map(p=>`<div class="bk" data-id="${p.id}"><div class="cv" style="background-color:${p.bg||COLORS[0]};${p.img?`background-image:linear-gradient(rgba(255,250,240,.6),rgba(255,250,240,.6)),url('${p.img}')`:''}">${esc(p.title)}</div><div class="bi"><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p><div class="m">${esc(p.cat)} · ${esc(p.date||'')}${SH.length&&!p.shared?' · 이 기기에만':''}</div></div></div>`).join(''):q?'<div class="empty">찾는 시가 없어요.<br>다른 낱말로 검색해 보세요.</div>':'<div class="empty">아직 시가 없어요.<br>‘새 시 쓰기’ 또는 엑셀로 올려 보세요.</div>';
- $('pager').innerHTML=pages>1?`<button data-p="prev" ${pg===1?'disabled':''}>‹ 이전</button>`+Array.from({length:pages},(_,k)=>`<button data-p="${k+1}" class="${k+1===pg?'on':''}">${k+1}</button>`).join('')+`<button data-p="next" ${pg===pages?'disabled':''}>다음 ›</button>`:'';
+ $('pager').innerHTML=pages>1?`<button data-p="prev" ${pg===1?'disabled':''}>‹ 이전</button>`+(()=>{const st=new Set([1,pages,pg-2,pg-1,pg,pg+1,pg+2]);let h='',p=0;[...st].filter(n=>n>=1&&n<=pages).sort((x,y)=>x-y).forEach(n=>{if(p&&n-p>1)h+='<span class="dots">…</span>';h+=`<button data-p="${n}" class="${n===pg?'on':''}">${n}</button>`;p=n});return h})()+`<button data-p="next" ${pg===pages?'disabled':''}>다음 ›</button>`:'';
 }
 $('pager').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const v=b.dataset.p;pg=v==='prev'?pg-1:v==='next'?pg+1:+v;render();$('secT').scrollIntoView({behavior:'smooth'})};
 $('q').oninput=()=>{q=$('q').value.trim().toLowerCase();pg=1;$('qx').hidden=!q;render()};
